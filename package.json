@@ -8,6 +8,8 @@
     "start": "next start"
   },
   "dependencies": {
+    "botbuilder": "^4.8.0",
+    "botframework-connector": "^4.8.0",
     "next": "^9.3.3",
     "react": "^16.13.0",
     "react-dom": "^16.13.0"
