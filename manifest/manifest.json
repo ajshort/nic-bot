@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.5/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.5",
+  "version": "0.1.0",
+  "id": "09ecfb61-1cd3-4be0-a1fd-fb89d51a7b10",
+  "packageName": "nic-bot",
+  "developer": {
+    "name": "Andrew Short",
+    "websiteUrl": "https://ajshort.me",
+    "privacyUrl": "https://nic-bot.now.sh",
+    "termsOfUseUrl": "https://nic-bot.now.sh"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "NIC",
+    "full": "Northern Illawarra Cluster"
+  },
+  "description": {
+    "short": "NIC Teams Bot",
+    "full": "Notifications and other functionality for the NIC teams."
+  },
+  "accentColor": "#F48603",
+  "bots": [
+    {
+      "botId": "5ec14b21-2265-45df-b57e-499a159d49d7",
+      "scopes": [
+        "team"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": true
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": []
+}
