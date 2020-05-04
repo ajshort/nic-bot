@@ -1,6 +1,4 @@
-import { NowRequest, NowResponse } from '@now/node';
-
-export default (req: NowRequest, res: NowResponse) => {
+export default (req, res) => {
   // Make sure we have a POST reqest.
   if (req.method.toUpperCase() !== 'POST') {
     res.status(400).end();
