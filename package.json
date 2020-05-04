@@ -1,5 +1,5 @@
 {
-  "name": "nic-bot",
+  "name": "@ajshort/nic-bot",
   "version": "0.1.0",
   "private": true,
   "scripts": {
