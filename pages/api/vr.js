@@ -3,7 +3,7 @@ const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-conne
 const { createHmac } = require('crypto');
 const striptags = require('striptags');
 
-const VR_OPERATORS_CHANNEL_ID = '19:44121d6ec687487e9ed236bf396e2c91@thread.skype';
+const VR_OPERATORS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
 const VEHICLE_MOVEMENTS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
 
 export default async (req, res) => {
@@ -30,21 +30,46 @@ export default async (req, res) => {
   const connector = new ConnectorClient(credentials, { baseUri: process.env.BOT_SERVICE_URL });
 
   const card = CardFactory.adaptiveCard({
-    $schema: 'http://adaptivecards.io/schemas/adaptive-card.json',
-    type: 'AdaptiveCard',
-    version: '1.0',
-    body: [
+    "type": "AdaptiveCard",
+    "version": "1.0",
+    "body": [
       {
-        type: 'TextBlock',
-        text: striptags(activity.text),
+        "type": "ColumnSet",
+        "columns": [
+          {
+            "type": "Column",
+            "width": "auto",
+            "items": [
+              {
+                "type": "Image",
+                "altText": "",
+                "width": "32px",
+                "url": "https://nic-bot.now.sh/images/vehicle.png",
+                "height": "32px"
+              }
+            ]
+          },
+          {
+            "type": "Column",
+            "width": "stretch",
+            "items": [
+              {
+                "type": "TextBlock",
+                "text": "VR Vehicle Movement",
+                "weight": "Bolder",
+                "size": "Medium"
+              }
+            ],
+            "verticalContentAlignment": "Center"
+          }
+        ]
       },
       {
-        type: 'FactSet',
-        facts: [
-          { title: 'From', value: activity.from.name },
-        ],
-      },
+        "type": "TextBlock",
+        "text": `${activity.from.name}: ${striptags(activity.text)}`
+      }
     ],
+    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
   });
 
   await connector.conversations.createConversation({
