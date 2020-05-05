@@ -66,7 +66,8 @@ export default async (req, res) => {
       },
       {
         "type": "TextBlock",
-        "text": `${activity.from.name}: ${striptags(activity.text)}`
+        "text": `${activity.from.name}: ${striptags(activity.text)}`,
+        "stretch": true
       }
     ],
     "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
