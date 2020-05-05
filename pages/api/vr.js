@@ -1,8 +1,9 @@
 const { CardFactory } = require('botbuilder');
 const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-connector');
 const { createHmac } = require('crypto');
+const striptags = require('striptags');
 
-const VR_OPERATORS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
+const VR_OPERATORS_CHANNEL_ID = '19:44121d6ec687487e9ed236bf396e2c91@thread.skype';
 const VEHICLE_MOVEMENTS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
 
 export default async (req, res) => {
@@ -35,7 +36,7 @@ export default async (req, res) => {
     body: [
       {
         type: 'TextBlock',
-        text: activity.text.replace('<at>VR</at>', ''),
+        text: striptags(activity.text),
       },
       {
         type: 'FactSet',
