@@ -3,8 +3,8 @@ const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-conne
 const { createHmac } = require('crypto');
 const striptags = require('striptags');
 
-const VR_OPERATORS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
-const VEHICLE_MOVEMENTS_CHANNEL_ID = '19:66597a4b8431452fac97dd00a83bd2be@thread.skype';
+const VR_OPERATORS_CHANNEL_ID = '19:44121d6ec687487e9ed236bf396e2c91@thread.skype';
+const VEHICLE_MOVEMENTS_CHANNEL_ID = '19:80185faa397f47c9a35095b40de3bc7a@thread.skype';
 
 export default async (req, res) => {
   // Make sure we have a POST reqest.
