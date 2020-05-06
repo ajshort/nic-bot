@@ -1,33 +1,10 @@
 const { CardFactory } = require('botbuilder');
+const { channels } = require('./channels');
 const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-connector');
-const { createHmac } = require('crypto');
 const striptags = require('striptags');
 
-const VR_OPERATORS_CHANNEL_ID = '19:44121d6ec687487e9ed236bf396e2c91@thread.skype';
-const VEHICLE_MOVEMENTS_CHANNEL_ID = '19:80185faa397f47c9a35095b40de3bc7a@thread.skype';
-
-export default async (req, res) => {
-  // Make sure we have a POST reqest.
-  if (req.method.toUpperCase() !== 'POST') {
-    res.status(400).end();
-    return;
-  }
-
-  // TODO authenticate message
-
-  const activity = req.body;
-
-  // Make sure it's coming from the vehicle movements channel.
-  if (activity.channelData.teamsChannelId != VEHICLE_MOVEMENTS_CHANNEL_ID) {
-    res.status(200).end();
-    return;
-  }
-
-  // Make a new post in the VR operators channel.
-  MicrosoftAppCredentials.trustServiceUrl(process.env.BOT_SERVICE_URL);
-
-  const credentials = new MicrosoftAppCredentials(process.env.BOT_APP_ID, process.env.BOT_APP_PASSWORD);
-  const connector = new ConnectorClient(credentials, { baseUri: process.env.BOT_SERVICE_URL });
+async function handleVrVehicleMessage(req, res, connector) {
+  const { conversation, text, from } = req.body;
 
   const card = CardFactory.adaptiveCard({
     "type": "AdaptiveCard",
@@ -66,7 +43,7 @@ export default async (req, res) => {
       },
       {
         "type": "TextBlock",
-        "text": `${activity.from.name}: ${striptags(activity.text)}`,
+        "text": `${from.name}: ${striptags(text)}`,
         "stretch": true
       }
     ],
@@ -75,12 +52,42 @@ export default async (req, res) => {
 
   await connector.conversations.createConversation({
     isGroup: true,
-    channelData: { channel: { id: VR_OPERATORS_CHANNEL_ID } },
+    channelData: { channel: { id: channels.NIC.VR_OPERATORS } },
     activity: { type: 'message', attachments: [card] },
   });
 
-  res.status(200).json({
+  await connector.conversations.sendToConversation(conversation.id, {
     type: 'message',
     text: 'Thanks, I\'ll post this to the VR Operators channel.',
   });
 }
+
+export default async (req, res) => {
+  if (req.method.toUpperCase() !== 'POST') {
+    res.status(400).end();
+    return;
+  }
+
+  // TODO verify the authorisation.
+
+  // Ignore direct messages.
+  if (req.body.conversation.conversationType !== 'channel') {
+    res.status(200).end();
+    return;
+  }
+
+  MicrosoftAppCredentials.trustServiceUrl(process.env.BOT_SERVICE_URL);
+
+  const credentials = new MicrosoftAppCredentials(process.env.BOT_APP_ID, process.env.BOT_APP_PASSWORD);
+  const connector = new ConnectorClient(credentials, { baseUri: process.env.BOT_SERVICE_URL });
+
+  // We assume that any messages tagging is in the WOL vehicle movements channels are a VR
+  // vehicle movement, so re-post it to the VR Operators channel.
+  const { channel } = req.body.channelData;
+
+  if (channel.id === channels.WOL.VEHICLE_MOVEMENTS) {
+    await handleVrVehicleMessage(req, res, connector);
+  }
+
+  res.status(200).end();
+};
