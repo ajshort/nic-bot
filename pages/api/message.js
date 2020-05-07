@@ -1,54 +1,11 @@
+const { createVehicleMovementCard } = require('./cards');
+const { channels } = require('./config');
 const { CardFactory } = require('botbuilder');
-const { channels } = require('./channels');
 const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-connector');
-const striptags = require('striptags');
 
 async function handleVrVehicleMessage(req, res, connector) {
   const { conversation, text, from } = req.body;
-
-  const card = CardFactory.adaptiveCard({
-    "type": "AdaptiveCard",
-    "version": "1.0",
-    "body": [
-      {
-        "type": "ColumnSet",
-        "columns": [
-          {
-            "type": "Column",
-            "width": "auto",
-            "items": [
-              {
-                "type": "Image",
-                "altText": "",
-                "width": "32px",
-                "url": "https://nic-bot.now.sh/images/vehicle.png",
-                "height": "32px"
-              }
-            ]
-          },
-          {
-            "type": "Column",
-            "width": "stretch",
-            "items": [
-              {
-                "type": "TextBlock",
-                "text": "VR Vehicle Movement",
-                "weight": "Bolder",
-                "size": "Medium"
-              }
-            ],
-            "verticalContentAlignment": "Center"
-          }
-        ]
-      },
-      {
-        "type": "TextBlock",
-        "text": `${from.name}: ${striptags(text)}`,
-        "stretch": true
-      }
-    ],
-    "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
-  });
+  const card = CardFactory.adaptiveCard(createVehicleMovementCard(from.name, text));
 
   await connector.conversations.createConversation({
     isGroup: true,
@@ -70,8 +27,10 @@ export default async (req, res) => {
 
   // TODO verify the authorisation.
 
+  const { channelData, conversation, recipient } = req.body;
+
   // Ignore direct messages.
-  if (req.body.conversation.conversationType !== 'channel') {
+  if (conversation.conversationType !== 'channel') {
     res.status(200).end();
     return;
   }
@@ -83,9 +42,7 @@ export default async (req, res) => {
 
   // We assume that any messages tagging is in the WOL vehicle movements channels are a VR
   // vehicle movement, so re-post it to the VR Operators channel.
-  const { channel } = req.body.channelData;
-
-  if (channel.id === channels.WOL.VEHICLE_MOVEMENTS) {
+  if (recipient.name === 'VR' && channelData.teamsChannelId === channels.WOL.VEHICLE_MOVEMENTS) {
     await handleVrVehicleMessage(req, res, connector);
   }
 
