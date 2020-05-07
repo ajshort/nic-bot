@@ -1,0 +1,41 @@
+{
+  "$schema": "https://developer.microsoft.com/en-us/json-schemas/teams/v1.6/MicrosoftTeams.schema.json",
+  "manifestVersion": "1.6",
+  "version": "0.1.0",
+  "id": "c4bc513d-fa44-4e41-8579-cef27bd46dc3",
+  "packageName": "nic-bot-vr",
+  "developer": {
+    "name": "Andrew Short",
+    "websiteUrl": "https://ajshort.me",
+    "privacyUrl": "https://nic-bot.now.sh",
+    "termsOfUseUrl": "https://nic-bot.now.sh"
+  },
+  "icons": {
+    "color": "color.png",
+    "outline": "outline.png"
+  },
+  "name": {
+    "short": "VR",
+    "full": "Vertical Rescue"
+  },
+  "description": {
+    "short": "Cross-posts Vertical Rescue vehicle movements",
+    "full": "Cross-posts Vertical Rescue vehicle movements from the WOL Vehicle Movements channel to the NIC VR Operators channel."
+  },
+  "accentColor": "#15AABF",
+  "bots": [
+    {
+      "botId": "11355b99-a86e-4e2b-acd7-92770512efaf",
+      "scopes": [
+        "team"
+      ],
+      "supportsFiles": false,
+      "isNotificationOnly": false
+    }
+  ],
+  "permissions": [
+    "identity",
+    "messageTeamMembers"
+  ],
+  "validDomains": []
+}
