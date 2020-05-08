@@ -38,7 +38,8 @@ export const createVehicleMovementCard = (name, text) => ({
     {
       "type": "TextBlock",
       "text": `${name}: ${striptags(text)}`,
-      "stretch": true
+      "stretch": true,
+      "wrap": true
     }
   ],
   "$schema": "http://adaptivecards.io/schemas/adaptive-card.json"
