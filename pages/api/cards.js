@@ -3,6 +3,7 @@ const striptags = require('striptags');
 export const createVehicleMovementCard = (name, text) => ({
   "type": "AdaptiveCard",
   "version": "1.0",
+  "fallbackText": text,
   "body": [
     {
       "type": "ColumnSet",
