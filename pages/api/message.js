@@ -10,7 +10,11 @@ async function handleVrVehicleMessage(req, connector, channelId, channelName) {
   await connector.conversations.createConversation({
     isGroup: true,
     channelData: { channel: { id: channelId } },
-    activity: { type: 'message', attachments: [card] },
+    activity: {
+      type: 'message',
+      summary: text,
+      attachments: [card],
+    },
   });
 
   await connector.conversations.sendToConversation(conversation.id, {
