@@ -3,7 +3,7 @@ const { channels } = require('./config');
 const { CardFactory } = require('botbuilder');
 const { ConnectorClient, MicrosoftAppCredentials } = require('botframework-connector');
 
-async function handleVrVehicleMessage(req, connector, channelId, channelName) {
+async function handleVrVehicleMessage(req, connector, channelId) {
   const { conversation, text, from } = req.body;
   const card = CardFactory.adaptiveCard(createVehicleMovementCard(from.name, text));
 
@@ -17,10 +17,10 @@ async function handleVrVehicleMessage(req, connector, channelId, channelName) {
     },
   });
 
-  await connector.conversations.sendToConversation(conversation.id, {
-    type: 'message',
-    text: `Thanks, I'll post this to the ${channelName} channel.`,
-  });
+  // await connector.conversations.sendToConversation(conversation.id, {
+  //   type: 'message',
+  //   text: `Thanks, I'll post this to the ${channelName} channel.`,
+  // });
 }
 
 export default async (req, res) => {
@@ -47,13 +47,21 @@ export default async (req, res) => {
   // We assume that any messages tagging is in the WOL vehicle movements channels are a VR
   // vehicle movement, so re-post it to the VR Operators channel. We do the same vice-versa
   // for posts to the VR operators channel.
+  let channelName;
+  
   if (channelData.teamsChannelId === channels.WOL.VEHICLE_MOVEMENTS) {
-    await handleVrVehicleMessage(req, connector, channels.NIC.VR_OPERATORS, 'VR Operators');
+    channelName = 'VR Operators';
+    await handleVrVehicleMessage(req, connector, channels.NIC.VR_OPERATORS);
   } else if (channelData.teamsChannelId === channels.NIC.VR_OPERATORS) {
+    channelName = 'WOL Vehicle Movements';
     await handleVrVehicleMessage(req, connector, channels.WOL.VEHICLE_MOVEMENTS, 'WOL Vehicle Movements');
   } else if (channelData.teamsChannelId === channels.NIC.TESTBED) {
+    channelName = 'Technology Testbed';
     await handleVrVehicleMessage(req, connector, channels.NIC.TESTBED, 'Technology Testbed');
   }
-
-  res.status(200).end();
+  
+  res.json({
+    type: 'message',
+    text: `Thanks, I'll post this to the ${channelName} channel.`,
+  });
 };
