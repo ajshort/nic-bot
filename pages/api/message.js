@@ -32,6 +32,8 @@ export default async (req, res) => {
   // TODO verify the authorisation.
 
   const { channelData, conversation, recipient } = req.body;
+  
+  console.log(req.body);
 
   // Ignore direct messages.
   if (conversation.conversationType !== 'channel') {
