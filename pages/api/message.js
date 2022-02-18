@@ -32,8 +32,6 @@ export default async (req, res) => {
   // TODO verify the authorisation.
 
   const { channelData, conversation, recipient } = req.body;
-  
-  console.log(req.body);
 
   // Ignore direct messages.
   if (conversation.conversationType !== 'channel') {
@@ -49,14 +47,12 @@ export default async (req, res) => {
   // We assume that any messages tagging is in the WOL vehicle movements channels are a VR
   // vehicle movement, so re-post it to the VR Operators channel. We do the same vice-versa
   // for posts to the VR operators channel.
-  if (recipient.name === 'VR') {
-    if (channelData.teamsChannelId === channels.WOL.VEHICLE_MOVEMENTS) {
-      await handleVrVehicleMessage(req, connector, channels.NIC.VR_OPERATORS, 'VR Operators');
-    } else if (channelData.teamsChannelId === channels.NIC.VR_OPERATORS) {
-      await handleVrVehicleMessage(req, connector, channels.WOL.VEHICLE_MOVEMENTS, 'WOL Vehicle Movements');
-    } else if (channelData.teamsChannelId === channels.NIC.TESTBED) {
-      await handleVrVehicleMessage(req, connector, channels.NIC.TESTBED, 'Technology Testbed');
-    }
+  if (channelData.teamsChannelId === channels.WOL.VEHICLE_MOVEMENTS) {
+    await handleVrVehicleMessage(req, connector, channels.NIC.VR_OPERATORS, 'VR Operators');
+  } else if (channelData.teamsChannelId === channels.NIC.VR_OPERATORS) {
+    await handleVrVehicleMessage(req, connector, channels.WOL.VEHICLE_MOVEMENTS, 'WOL Vehicle Movements');
+  } else if (channelData.teamsChannelId === channels.NIC.TESTBED) {
+    await handleVrVehicleMessage(req, connector, channels.NIC.TESTBED, 'Technology Testbed');
   }
 
   res.status(200).end();
